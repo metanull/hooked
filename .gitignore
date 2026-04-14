@@ -1,0 +1,29 @@
+# Laravel
+/vendor/
+node_modules/
+/public/hot
+/public/storage
+/storage/*.key
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestea.yaml
+Homestea.json
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+
+# Site-specific configuration (MWNF infrastructure data)
+config/site/
+storage/app/site/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# PowerShell module build output
+**/output/
+**/TestResults/
