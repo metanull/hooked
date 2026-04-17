@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->replace(IlluminateTrustProxies::class, TrustProxies::class);
+        $middleware->validateCsrfTokens(except: ['webhook/*']);
         $middleware->appendToGroup('web', EnforceIpWhitelist::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
