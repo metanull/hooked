@@ -4,6 +4,12 @@ Custom CI/CD orchestration tool for Windows Server.
 
 Laravel 12 + Livewire application that manages deployments via Windows Task Scheduler and PowerShell modules.
 
+## Repository Layout
+
+- Laravel application: repository root
+- PowerShell modules and Pester tests: `powershell/`
+- Site-specific Laravel configuration: `config/site/` (gitignored)
+
 ## Architecture
 
 ```

@@ -18,6 +18,7 @@ yarn-error.log
 # Site-specific configuration (MWNF infrastructure data)
 config/site/
 storage/app/site/
+.tmp-laravel12/
 
 # OS
 Thumbs.db
