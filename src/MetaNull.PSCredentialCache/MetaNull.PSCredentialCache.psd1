@@ -1,7 +1,7 @@
 @{
     RootModule        = 'MetaNull.PSCredentialCache.psm1'
-    ModuleVersion     = '0.1.0'
-    GUID              = 'c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f'
+    ModuleVersion     = '0.1.2'
+    GUID              = '832e7476-4ce8-4a88-a77b-686846074eab'
     Author            = 'Pascal Havelange'
     CompanyName       = 'Museum With No Frontiers'
     Copyright         = '(c) Museum With No Frontiers. All rights reserved.'
@@ -11,7 +11,7 @@
     RequiredModules   = @(
         @{
             ModuleName = 'MetaNull.PSStringToolkit'
-            ModuleVersion = '0.1.0'
+            ModuleVersion = '0.1.2'
         }
     )
     FunctionsToExport = @(
@@ -29,9 +29,10 @@
     AliasesToExport    = @()
     PrivateData       = @{
         PSData = @{
-            Tags       = @('credential', 'dpapi', 'windows', 'security')
-            LicenseUri = 'https://github.com/metanull/hooked/blob/main/LICENSE'
-            ProjectUri = 'https://github.com/metanull/hooked'
+            Tags         = @('credential', 'dpapi', 'windows', 'security')
+            LicenseUri   = 'https://opensource.org/license/mit'
+            ProjectUri   = 'https://github.com/metanull/hooked'
+            ReleaseNotes = '0.1.2: Refresh module GUID and continue PSGallery metadata cleanup.'
         }
     }
 }

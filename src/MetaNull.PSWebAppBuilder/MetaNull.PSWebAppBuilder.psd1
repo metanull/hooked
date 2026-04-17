@@ -1,7 +1,7 @@
 @{
     RootModule        = 'MetaNull.PSWebAppBuilder.psm1'
-    ModuleVersion     = '0.1.0'
-    GUID              = 'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f80'
+    ModuleVersion     = '0.1.2'
+    GUID              = 'c362c902-0611-49c0-b389-f5ac097ca483'
     Author            = 'Pascal Havelange'
     CompanyName       = 'Museum With No Frontiers'
     Copyright         = '(c) Museum With No Frontiers. All rights reserved.'
@@ -10,7 +10,7 @@
     RequiredModules   = @(
         @{
             ModuleName = 'MetaNull.PSGitOps'
-            ModuleVersion = '0.1.0'
+            ModuleVersion = '0.1.2'
         }
     )
     FunctionsToExport = @(
@@ -25,9 +25,10 @@
     AliasesToExport    = @()
     PrivateData       = @{
         PSData = @{
-            Tags       = @('laravel', 'nodejs', 'deployment', 'devops')
-            LicenseUri = 'https://github.com/metanull/hooked/blob/main/LICENSE'
-            ProjectUri = 'https://github.com/metanull/hooked'
+            Tags         = @('laravel', 'nodejs', 'deployment', 'devops')
+            LicenseUri   = 'https://opensource.org/license/mit'
+            ProjectUri   = 'https://github.com/metanull/hooked'
+            ReleaseNotes = '0.1.2: Refresh module GUID and continue PSGallery metadata cleanup.'
         }
     }
 }

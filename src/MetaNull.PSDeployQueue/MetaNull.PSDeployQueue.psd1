@@ -1,7 +1,7 @@
 @{
     RootModule        = 'MetaNull.PSDeployQueue.psm1'
-    ModuleVersion     = '0.1.0'
-    GUID              = 'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f80'
+    ModuleVersion     = '0.1.2'
+    GUID              = '7802d35e-760c-4129-a22a-a4e7e0a59eb9'
     Author            = 'Pascal Havelange'
     CompanyName       = 'Museum With No Frontiers'
     Copyright         = '(c) Museum With No Frontiers. All rights reserved.'
@@ -33,9 +33,10 @@
     AliasesToExport    = @()
     PrivateData       = @{
         PSData = @{
-            Tags       = @('queue', 'deployment', 'scheduler', 'notification', 'devops')
-            LicenseUri = 'https://github.com/metanull/hooked/blob/main/LICENSE'
-            ProjectUri = 'https://github.com/metanull/hooked'
+            Tags         = @('queue', 'deployment', 'scheduler', 'notification', 'devops')
+            LicenseUri   = 'https://opensource.org/license/mit'
+            ProjectUri   = 'https://github.com/metanull/hooked'
+            ReleaseNotes = '0.1.2: Refresh module GUID and continue PSGallery metadata cleanup.'
         }
     }
 }
