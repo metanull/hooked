@@ -6,6 +6,7 @@ use App\Livewire\ExhibitionList;
 use App\Models\Exhibition;
 use App\Models\User;
 use App\Services\Exhibitions\ExhibitionQueueService;
+use App\Services\Exhibitions\ExhibitionQueueStatusService;
 use App\Services\Exhibitions\ExhibitionRegistrySyncService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -14,6 +15,26 @@ use Tests\TestCase;
 class ExhibitionListTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->app->instance(ExhibitionQueueStatusService::class, new class extends ExhibitionQueueStatusService {
+            public function __construct()
+            {
+            }
+
+            public function readState(): array
+            {
+                return [
+                    'state' => 'Ready',
+                    'busy' => false,
+                    'pending_commands' => [],
+                ];
+            }
+        });
+    }
 
     public function test_exhibition_list_page_requires_authentication(): void
     {
@@ -193,5 +214,33 @@ class ExhibitionListTest extends TestCase
             'live:arts_in_dialogue',
             'demo:playground_gallery',
         ], $queueService->operations);
+    }
+
+    public function test_queue_status_panel_shows_pending_commands_and_busy_state(): void
+    {
+        $this->app->instance(ExhibitionQueueStatusService::class, new class extends ExhibitionQueueStatusService {
+            public function __construct()
+            {
+            }
+
+            public function readState(): array
+            {
+                return [
+                    'state' => 'Running',
+                    'busy' => true,
+                    'pending_commands' => [
+                        ['id' => '169', 'command' => 'Publish-MWNFExhibition -Name arts_in_dialogue -LanguageId de -Demo'],
+                        ['id' => '170', 'command' => 'Publish-MWNFExhibition -Name arts_in_dialogue -LanguageId de'],
+                    ],
+                ];
+            }
+        });
+
+        Livewire::test(ExhibitionList::class)
+            ->assertSet('queueRunnerState', 'Running')
+            ->assertSet('queueRunnerBusy', true)
+            ->assertSee('Pending Commands')
+            ->assertSee('Queue Item 169')
+            ->assertSee('Publish-MWNFExhibition -Name arts_in_dialogue -LanguageId de -Demo');
     }
 }
