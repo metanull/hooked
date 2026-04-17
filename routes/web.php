@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -11,6 +12,8 @@ Route::get('/', function () {
 
     return redirect()->route('login');
 });
+
+Route::post('/webhook/{provider}', [WebhookController::class, 'store'])->name('webhook.store');
 
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');

@@ -12,4 +12,5 @@ return [
         'cache_key' => env('ATLASSIAN_IP_RANGES_CACHE_KEY', 'webhooks.atlassian_ip_ranges'),
         'cache_ttl_seconds' => 86400,
     ],
+    'task_registry' => [],
 ];
