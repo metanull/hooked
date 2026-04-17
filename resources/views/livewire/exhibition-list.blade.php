@@ -13,7 +13,7 @@
             </div>
 
             <div class="flex flex-wrap gap-3">
-                <a href="/admin/exhibitions/create" class="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700">
+                <a href="{{ route('exhibitions.create') }}" class="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700">
                     Create
                 </a>
 
@@ -61,7 +61,7 @@
                             </td>
                             <td class="px-4 py-4">
                                 <div class="flex flex-wrap gap-2">
-                                    <a href="/admin/exhibitions/{{ $exhibition->name }}/{{ $exhibition->language_id }}/edit" class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-500">
+                                    <a href="{{ route('exhibitions.edit', ['name' => $exhibition->name, 'languageId' => $exhibition->language_id]) }}" class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-500">
                                         Configure
                                     </a>
                                     <button type="button" disabled class="inline-flex cursor-not-allowed items-center rounded-md bg-rose-100 px-3 py-2 text-xs font-semibold text-rose-700 opacity-70">
