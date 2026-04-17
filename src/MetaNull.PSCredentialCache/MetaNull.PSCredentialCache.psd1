@@ -8,7 +8,12 @@
     Description       = 'DPAPI credential caching with configurable registry storage and expiry. Windows-only.'
     PowerShellVersion = '5.1'
     CompatiblePSEditions = @('Desktop')
-    RequiredModules   = @('MetaNull.PSStringToolkit')
+    RequiredModules   = @(
+        @{
+            ModuleName = 'MetaNull.PSStringToolkit'
+            ModuleVersion = '0.1.0'
+        }
+    )
     FunctionsToExport = @(
         'Set-CredentialCacheConfiguration'
         'Get-CredentialCacheConfiguration'
