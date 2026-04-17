@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnforceIpWhitelist;
 use App\Http\Middleware\TrustProxies;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -14,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->replace(IlluminateTrustProxies::class, TrustProxies::class);
+        $middleware->appendToGroup('web', EnforceIpWhitelist::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
