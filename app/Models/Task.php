@@ -19,6 +19,8 @@ class Task extends Model
         'scheduled_task_path',
         'type',
         'active',
+        'webhook_repository_pattern',
+        'webhook_branch_pattern',
     ];
 
     /**

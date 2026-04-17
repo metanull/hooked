@@ -23,13 +23,6 @@ class WebhookControllerTest extends TestCase
             'enabled' => true,
             'addresses' => '104.192.136.0/21',
         ]);
-        config()->set('webhooks.task_registry', [
-            [
-                'repository' => 'hooked',
-                'branch' => 'main',
-                'task' => 'deploy-hooked',
-            ],
-        ]);
 
         $this->app->instance(TrustedWebhookIpRangeProviderInterface::class, new class implements TrustedWebhookIpRangeProviderInterface {
             public function getRanges(): array
@@ -48,6 +41,8 @@ class WebhookControllerTest extends TestCase
             'scheduled_task_path' => '\\upgrade.museumwnf.org\\hooked-deploy',
             'type' => 'run',
             'active' => true,
+            'webhook_repository_pattern' => 'hooked',
+            'webhook_branch_pattern' => 'main',
         ]);
         $payload = [
             'repository' => ['slug' => 'hooked'],
@@ -97,19 +92,14 @@ class WebhookControllerTest extends TestCase
     public function test_webhook_endpoint_returns_a_bad_request_when_no_task_matches_the_payload(): void
     {
         Bus::fake();
-        config()->set('webhooks.task_registry', [
-            [
-                'repository' => 'other-repository',
-                'branch' => 'develop',
-                'task' => 'deploy-hooked',
-            ],
-        ]);
         Task::query()->create([
             'name' => 'deploy-hooked',
             'directory' => 'upgrade',
             'scheduled_task_path' => '\\upgrade.museumwnf.org\\hooked-deploy',
             'type' => 'run',
             'active' => true,
+            'webhook_repository_pattern' => 'other-repository',
+            'webhook_branch_pattern' => 'develop',
         ]);
 
         $response = $this
