@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Task extends Model
 {
@@ -26,4 +27,9 @@ class Task extends Model
     protected $casts = [
         'active' => 'boolean',
     ];
+
+    public function deployments(): HasMany
+    {
+        return $this->hasMany(Deployment::class);
+    }
 }

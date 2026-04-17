@@ -37,7 +37,7 @@ class WebhookController extends Controller
             ], 400);
         }
 
-        DeploymentJob::dispatch($task->id);
+        DeploymentJob::dispatch($task->id, $payload->actor);
 
         return response()->json([
             'status' => 'accepted',
