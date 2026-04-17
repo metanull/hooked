@@ -1,7 +1,7 @@
 @{
     RootModule        = 'MetaNull.PSGitOps.psm1'
-    ModuleVersion     = '0.1.0'
-    GUID              = 'b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e'
+    ModuleVersion     = '0.1.2'
+    GUID              = 'aa2c69a8-1887-4ab2-ac6a-ab7f5be82307'
     Author            = 'Pascal Havelange'
     CompanyName       = 'Museum With No Frontiers'
     Copyright         = '(c) Museum With No Frontiers. All rights reserved.'
@@ -21,9 +21,10 @@
     AliasesToExport    = @()
     PrivateData       = @{
         PSData = @{
-            Tags       = @('git', 'devops', 'ci-cd', 'deployment')
-            LicenseUri = 'https://github.com/metanull/hooked/blob/main/LICENSE'
-            ProjectUri = 'https://github.com/metanull/hooked'
+            Tags         = @('git', 'devops', 'ci-cd', 'deployment')
+            LicenseUri   = 'https://opensource.org/license/mit'
+            ProjectUri   = 'https://github.com/metanull/hooked'
+            ReleaseNotes = '0.1.2: Refresh module GUID and continue PSGallery metadata cleanup.'
         }
     }
 }
