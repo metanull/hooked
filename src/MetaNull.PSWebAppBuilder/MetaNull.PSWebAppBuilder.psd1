@@ -7,7 +7,12 @@
     Copyright         = '(c) Museum With No Frontiers. All rights reserved.'
     Description       = 'Web application build and deployment pipelines for Laravel, Lumen, and Node.js projects.'
     PowerShellVersion = '5.1'
-    RequiredModules   = @('MetaNull.PSGitOps')
+    RequiredModules   = @(
+        @{
+            ModuleName = 'MetaNull.PSGitOps'
+            ModuleVersion = '0.1.0'
+        }
+    )
     FunctionsToExport = @(
         'Invoke-WebAppUpdate'
         'Build-LaravelApi'

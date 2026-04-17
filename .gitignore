@@ -27,3 +27,6 @@ Desktop.ini
 # PowerShell module build output
 **/output/
 **/TestResults/
+
+# PSGallery
+.env.psgallery
