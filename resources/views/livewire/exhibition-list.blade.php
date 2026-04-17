@@ -29,8 +29,8 @@
 
                 <button
                     type="button"
-                    disabled
-                    class="inline-flex cursor-not-allowed items-center rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 opacity-70"
+                    wire:click="publishAll"
+                    class="inline-flex items-center rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 shadow-sm transition hover:bg-amber-100"
                 >
                     Publish All
                 </button>
@@ -64,17 +64,17 @@
                                     <a href="{{ route('exhibitions.edit', ['name' => $exhibition->name, 'languageId' => $exhibition->language_id]) }}" class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-500">
                                         Configure
                                     </a>
-                                    <button type="button" disabled class="inline-flex cursor-not-allowed items-center rounded-md bg-rose-100 px-3 py-2 text-xs font-semibold text-rose-700 opacity-70">
+                                    <button type="button" wire:click="uninstall({{ $exhibition->id }})" class="inline-flex items-center rounded-md bg-rose-100 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-200">
                                         Uninstall
                                     </button>
                                 </div>
                             </td>
                             <td class="px-4 py-4">
                                 <div class="flex flex-wrap gap-2">
-                                    <button type="button" disabled class="inline-flex cursor-not-allowed items-center rounded-md bg-emerald-100 px-3 py-2 text-xs font-semibold text-emerald-700 opacity-70">
+                                    <button type="button" wire:click="publishDemo({{ $exhibition->id }})" class="inline-flex items-center rounded-md bg-emerald-100 px-3 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-200">
                                         Publish
                                     </button>
-                                    <button type="button" disabled class="inline-flex cursor-not-allowed items-center rounded-md bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-700 opacity-70">
+                                    <button type="button" wire:click="unpublishDemo({{ $exhibition->id }})" class="inline-flex items-center rounded-md bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-700 transition hover:bg-amber-200">
                                         Unpublish
                                     </button>
                                     <a href="{{ rtrim((string) $demoBaseUrl, '/') }}/{{ $exhibition->name }}/{{ $exhibition->language_id }}" target="_blank" rel="noreferrer" class="inline-flex items-center rounded-md border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100">
@@ -84,10 +84,10 @@
                             </td>
                             <td class="px-4 py-4">
                                 <div class="flex flex-wrap gap-2">
-                                    <button type="button" disabled class="inline-flex cursor-not-allowed items-center rounded-md bg-emerald-100 px-3 py-2 text-xs font-semibold text-emerald-700 opacity-70">
+                                    <button type="button" wire:click="publishLive({{ $exhibition->id }})" class="inline-flex items-center rounded-md bg-emerald-100 px-3 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-200">
                                         Publish
                                     </button>
-                                    <button type="button" disabled class="inline-flex cursor-not-allowed items-center rounded-md bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-700 opacity-70">
+                                    <button type="button" wire:click="unpublishLive({{ $exhibition->id }})" class="inline-flex items-center rounded-md bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-700 transition hover:bg-amber-200">
                                         Unpublish
                                     </button>
                                     <a href="{{ rtrim((string) $liveBaseUrl, '/') }}/{{ $exhibition->name }}/{{ $exhibition->language_id }}" target="_blank" rel="noreferrer" class="inline-flex items-center rounded-md border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100">
