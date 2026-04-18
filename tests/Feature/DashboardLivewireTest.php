@@ -10,7 +10,7 @@ class DashboardLivewireTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_dashboard_renders_the_task_and_deployment_livewire_components(): void
+    public function test_dashboard_renders_the_admin_livewire_components(): void
     {
         $user = User::factory()->create();
 
@@ -21,5 +21,6 @@ class DashboardLivewireTest extends TestCase
         $response->assertOk();
         $response->assertSeeLivewire('task-dashboard');
         $response->assertSeeLivewire('deployment-history-viewer');
+        $response->assertSeeLivewire('audit-log-viewer');
     }
 }
