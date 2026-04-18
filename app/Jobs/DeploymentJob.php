@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Deployment;
 use App\Models\Task;
+use App\Services\AuditLogger;
 use App\Services\PowerShellService;
 use App\Services\ProcessResult;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -23,7 +24,7 @@ class DeploymentJob implements ShouldQueue
         public readonly ?string $triggeredBy = null,
     ) {}
 
-    public function handle(PowerShellService $powerShellService): void
+    public function handle(PowerShellService $powerShellService, AuditLogger $auditLogger): void
     {
         $task = Task::query()->find($this->taskId);
 
@@ -37,6 +38,12 @@ class DeploymentJob implements ShouldQueue
             'triggered_by' => $triggeredBy,
             'status' => 'running',
             'started_at' => now(),
+        ]);
+
+        $auditLogger->log('task.triggered', $task->name, [
+            'triggered_by' => $triggeredBy,
+            'deployment_id' => $deployment->id,
+            'source' => 'deployment_job',
         ]);
 
         Log::info('Dispatching scheduled task from deployment job.', [

@@ -28,6 +28,11 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertDatabaseHas('audit_log', [
+            'user' => $user->email,
+            'action' => 'auth.login',
+            'target' => 'web',
+        ]);
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
@@ -50,5 +55,10 @@ class AuthenticationTest extends TestCase
 
         $this->assertGuest();
         $response->assertRedirect('/');
+        $this->assertDatabaseHas('audit_log', [
+            'user' => $user->email,
+            'action' => 'auth.logout',
+            'target' => 'web',
+        ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\DeploymentJob;
+use App\Services\AuditLogger;
 use App\Services\Webhooks\WebhookProviderManager;
 use App\Services\Webhooks\WebhookTaskResolver;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +17,7 @@ class WebhookController extends Controller
         private readonly WebhookTaskResolver $taskResolver,
     ) {}
 
-    public function store(Request $request, string $provider): JsonResponse
+    public function store(Request $request, string $provider, AuditLogger $auditLogger): JsonResponse
     {
         $webhookProvider = $this->providerManager->resolve($provider);
 
@@ -36,6 +37,14 @@ class WebhookController extends Controller
                 'message' => $exception->getMessage(),
             ], 400);
         }
+
+        $auditLogger->log('webhook.received', $payload->repositorySlug.':'.$payload->branch, [
+            'provider' => $webhookProvider->getProviderName(),
+            'repository' => $payload->repositorySlug,
+            'branch' => $payload->branch,
+            'task' => $task->name,
+            'actor' => $payload->actor,
+        ]);
 
         DeploymentJob::dispatch($task->id, $payload->actor);
 
