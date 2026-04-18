@@ -1,6 +1,8 @@
 <?php
 
-$taskDirectories = [
+$applicationRoot = env('APP_WEBROOT', 'C:/mwnf-server/apps');
+
+$scheduledTaskDirectories = [
     'local' => '\\local.museumwnf.org\\',
     'www' => '\\www.museumwnf.org\\',
     'demo' => '\\upgrade.museumwnf.org\\',
@@ -8,326 +10,189 @@ $taskDirectories = [
     'dxa_cli' => '\\www.museumwnf.org\\DXA-CLI\\',
 ];
 
-return [
-    'data_add-uploaded-images' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'add-uploaded-images',
+$tasks = [];
+
+$makeTask = function (
+    string $name,
+    string $directory,
+    string $label,
+    string $scheduledTaskPath,
+    ?string $repoPath = null,
+    string $repoBranch = 'master',
+    ?array $webhookMatch = null,
+    bool $active = true,
+) use (&$tasks): void {
+    $task = [
+        'directory' => $directory,
+        'label' => $label,
+        'scheduled_task_path' => $scheduledTaskPath,
         'type' => 'run',
-        'webhook_match' => null,
-    ],
-    'data_resize-images' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'resize-images',
-        'type' => 'run',
-        'webhook_match' => null,
-    ],
-    'data_glossary' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'glossary',
-        'type' => 'run',
-        'webhook_match' => null,
-    ],
-    'data_api-cache' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'clear-api-cache',
-        'type' => 'run',
-        'webhook_match' => null,
-    ],
-    'dxa_galleries-client' => [
-        'directory' => 'www.museumwnf.org/DXA-CLI',
-        'scheduled_task_path' => $taskDirectories['dxa_cli'].'galleries-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'galleries-client',
-            'branch' => 'master',
-        ],
-    ],
-    'dxa_galleries-api' => [
-        'directory' => 'www.museumwnf.org/DXA-API',
-        'scheduled_task_path' => $taskDirectories['dxa_api'].'galleries-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'galleries-api',
-            'branch' => 'master',
-        ],
-    ],
-    'dynasties_client' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'dynasties-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'dynasties-client',
-            'branch' => 'master',
-        ],
-    ],
-    'dynasties_api' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'dynasties-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'dynasties-api',
-            'branch' => 'master',
-        ],
-    ],
-    'explore_client' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'explore-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'explore-client',
-            'branch' => 'master',
-        ],
-    ],
-    'explore_api' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'explore-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'explore-api',
-            'branch' => 'master',
-        ],
-    ],
-    'books_client' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'books-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'books-client',
-            'branch' => 'master',
-        ],
-    ],
-    'books_api' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'books-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'books-api',
-            'branch' => 'master',
-        ],
-    ],
-    'portal_client' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'portal-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'portal-client',
-            'branch' => 'master',
-        ],
-    ],
-    'portal_api' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'portal-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'portal-api',
-            'branch' => 'master',
-        ],
-    ],
-    'portal_old' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'www',
-        'type' => 'run',
-        'webhook_match' => null,
-    ],
-    'website_www' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'www',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'museumwnf.org',
-            'branch' => 'master',
-        ],
-    ],
-    'website_islamicart' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'islamicart',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'islamicart',
-            'branch' => 'master',
-        ],
-    ],
-    'website_baroqueart' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'baroqueart',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'baroqueart',
-            'branch' => 'master',
-        ],
-    ],
-    'website_sharinghistory' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'sharinghistory',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'sharinghistory',
-            'branch' => 'master',
-        ],
-    ],
-    'website_travels' => [
-        'directory' => 'www.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['www'].'travels',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'travels',
-            'branch' => 'master',
-        ],
-    ],
-    'local_virtual-office' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'virtual-office',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'virtual-office',
-            'branch' => 'master',
-        ],
-    ],
-    'local_images' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'images',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'images',
-            'branch' => 'master',
-        ],
-    ],
-    'local_webhook' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'webhook',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'hooked',
-            'branch' => 'main',
-        ],
-    ],
-    'local_atlassian' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'atlassian',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'atlassian',
-            'branch' => 'master',
-        ],
-    ],
-    'local_logviewer' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'logviewer',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'logviewer',
-            'branch' => 'master',
-        ],
-    ],
-    'demo_book-client' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'upgrade-books-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'books-client',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_book-api' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'upgrade-books-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'books-api',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_portal-client' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'portal-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'portal-client',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_portal-api' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'portal-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'portal-api',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_explore-client' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'explore-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'explore-client',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_explore-api' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'explore-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'explore-api',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_galleries-client' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'galleries-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'galleries-client',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_galleries-api' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'galleries-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'galleries-api',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_website_islamicart' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'upgrade-dia',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'islamicart',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_dynasties_client' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'upgrade-dynasties-client',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'dynasties-client',
-            'branch' => 'develop',
-        ],
-    ],
-    'demo_dynasties_api' => [
-        'directory' => 'upgrade.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['demo'].'upgrade-dynasties-api',
-        'type' => 'run',
-        'webhook_match' => [
-            'repository' => 'dynasties-api',
-            'branch' => 'develop',
-        ],
-    ],
-    'database_creation' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'database-creation',
-        'type' => 'run',
-        'webhook_match' => null,
-    ],
-    'database_content' => [
-        'directory' => 'local.museumwnf.org',
-        'scheduled_task_path' => $taskDirectories['local'].'database-content',
-        'type' => 'run',
-        'webhook_match' => null,
-    ],
+        'active' => $active,
+    ];
+
+    if ($repoPath !== null) {
+        $task['repo_path'] = $repoPath;
+        $task['repo_branch'] = $repoBranch;
+    }
+
+    if ($webhookMatch !== null) {
+        $task['webhook_match'] = $webhookMatch;
+    }
+
+    $tasks[$name] = $task;
+};
+
+$makeTask('data_add-uploaded-images', 'data', 'add-uploaded-images', $scheduledTaskDirectories['local'].'add-uploaded-images');
+$makeTask('data_resize-images', 'data', 'resize-images', $scheduledTaskDirectories['local'].'resize-images');
+$makeTask('data_glossary', 'data', 'glossary', $scheduledTaskDirectories['local'].'glossary');
+$makeTask('data_api-cache', 'data', 'api-cache', $scheduledTaskDirectories['local'].'clear-api-cache');
+
+$dxaClientTasks = [
+    'amulets-client',
+    'archaeology-client',
+    'architectural-elements-client',
+    'arms-armoury-client',
+    'calligraphy-client',
+    'carpets-client',
+    'cars-client',
+    'ceramics-client',
+    'clothing-client',
+    'coins-medals-client',
+    'communication-client',
+    'funerary-objects-client',
+    'galleries-client',
+    'gallery-partners-client',
+    'glass-client',
+    'gold-silver-client',
+    'ivory-client',
+    'jewellery-client',
+    'landscapes-client',
+    'leatherworks-client',
+    'manuscripts-client',
+    'metalwork-client',
+    'mosaics-client',
+    'musical-instruments-client',
+    'paintings-client',
+    'photographs-client',
+    'porcelain-client',
+    'portraits-client',
+    'precious-stones-client',
+    'prints-drawings-client',
+    'religious-life-client',
+    'scientific-objects-client',
+    'sculptures-client',
+    'textiles-client',
+    'theatre-client',
+    'toys-games-client',
+    'unclear-doubts-excluded-client',
+    'wallpaintings-client',
+    'weights-measures-client',
+    'woodwork-client',
 ];
+
+foreach ($dxaClientTasks as $taskLabel) {
+    $host = substr($taskLabel, 0, -7);
+    $makeTask(
+        'dxa_'.$taskLabel,
+        'dxa',
+        $taskLabel,
+        $scheduledTaskDirectories['dxa_cli'].$taskLabel,
+        $applicationRoot.'/'.$host.'.museumwnf.org/client'
+    );
+}
+
+$dxaApiTasks = [
+    'amulets-api',
+    'archaeology-api',
+    'architectural-elements-api',
+    'arms-armoury-api',
+    'calligraphy-api',
+    'carpets-api',
+    'cars-api',
+    'ceramics-api',
+    'clothing-api',
+    'coins-medals-api',
+    'communication-api',
+    'funerary-objects-api',
+    'galleries-api',
+    'gallery-partners-api',
+    'glass-api',
+    'gold-silver-api',
+    'ivory-api',
+    'jewellery-api',
+    'landscapes-api',
+    'leatherworks-api',
+    'manuscripts-api',
+    'metalwork-api',
+    'mosaics-api',
+    'musical-instruments-api',
+    'paintings-api',
+    'photographs-api',
+    'porcelain-api',
+    'portraits-api',
+    'precious-stones-api',
+    'prints-drawings-api',
+    'religious-life-api',
+    'scientific-objects-api',
+    'sculptures-api',
+    'textiles-api',
+    'theatre-api',
+    'toys-games-api',
+    'unclear-doubts-excluded-api',
+    'wallpaintings-api',
+    'weights-measures-api',
+    'woodwork-api',
+];
+
+foreach ($dxaApiTasks as $taskLabel) {
+    $host = substr($taskLabel, 0, -4);
+    $makeTask(
+        'dxa_'.$taskLabel,
+        'dxa',
+        $taskLabel,
+        $scheduledTaskDirectories['dxa_api'].$taskLabel,
+        $applicationRoot.'/'.$host.'.museumwnf.org/api'
+    );
+}
+
+$makeTask('books_client', 'books', 'client', $scheduledTaskDirectories['www'].'books-client', $applicationRoot.'/books.museumwnf.org/client');
+$makeTask('books_api', 'books', 'api', $scheduledTaskDirectories['www'].'books-api', $applicationRoot.'/books.museumwnf.org/api');
+
+$makeTask('dynasties_client', 'dynasties', 'client', $scheduledTaskDirectories['www'].'dynasties-client', $applicationRoot.'/dynasties-local.museumwnf.org/client');
+$makeTask('dynasties_api', 'dynasties', 'api', $scheduledTaskDirectories['www'].'dynasties-api', $applicationRoot.'/dynasties-local.museumwnf.org/api');
+
+$makeTask('explore_client', 'explore', 'client', $scheduledTaskDirectories['www'].'explore-client', $applicationRoot.'/explore.museumwnf.org/client');
+$makeTask('explore_api', 'explore', 'api', $scheduledTaskDirectories['www'].'explore-api', $applicationRoot.'/explore.museumwnf.org/api');
+
+$makeTask('portal_client', 'portal', 'client', $scheduledTaskDirectories['www'].'portal-client', $applicationRoot.'/portal.museumwnf.org/client');
+$makeTask('portal_api', 'portal', 'api', $scheduledTaskDirectories['www'].'portal-api', $applicationRoot.'/portal.museumwnf.org/api');
+$makeTask('portal_old', 'portal', 'old', $scheduledTaskDirectories['www'].'www', $applicationRoot.'/museumwnf.org/app');
+
+$makeTask('website_www', 'website', 'www', $scheduledTaskDirectories['www'].'www', $applicationRoot.'/museumwnf.org/app', 'master', ['repository' => 'museumwnf.org', 'branch' => 'master']);
+$makeTask('website_islamicart', 'website', 'islamicart', $scheduledTaskDirectories['www'].'islamicart', $applicationRoot.'/islamicart.museumwnf.org/app', 'master', ['repository' => 'islamicart', 'branch' => 'master']);
+$makeTask('website_baroqueart', 'website', 'baroqueart', $scheduledTaskDirectories['www'].'baroqueart', $applicationRoot.'/baroqueart.museumwnf.org/app', 'master', ['repository' => 'baroqueart', 'branch' => 'master']);
+$makeTask('website_sharinghistory', 'website', 'sharinghistory', $scheduledTaskDirectories['www'].'sharinghistory', $applicationRoot.'/sharinghistory.museumwnf.org/app', 'master', ['repository' => 'sharinghistory', 'branch' => 'master']);
+$makeTask('website_travels', 'website', 'travels', $scheduledTaskDirectories['www'].'travels', $applicationRoot.'/travels.museumwnf.org/app', 'master', ['repository' => 'travels', 'branch' => 'master']);
+
+$makeTask('local_virtual-office', 'local', 'virtual-office', $scheduledTaskDirectories['local'].'virtual-office', $applicationRoot.'/virtual-office.museumwnf.org/app', 'master', ['repository' => 'virtual-office', 'branch' => 'master']);
+$makeTask('local_images', 'local', 'images', $scheduledTaskDirectories['local'].'images', $applicationRoot.'/images.museumwnf.org/app', 'master', ['repository' => 'images', 'branch' => 'master']);
+$makeTask('local_webhook', 'local', 'webhook', $scheduledTaskDirectories['local'].'webhook', $applicationRoot.'/upgrade.museumwnf.org/app/webhook', 'main', ['repository' => 'hooked', 'branch' => 'main']);
+$makeTask('local_atlassian', 'local', 'atlassian', $scheduledTaskDirectories['local'].'atlassian', $applicationRoot.'/upgrade.museumwnf.org/app/atlassian', 'master', ['repository' => 'atlassian', 'branch' => 'master']);
+$makeTask('local_logviewer', 'local', 'logviewer', $scheduledTaskDirectories['local'].'logviewer', $applicationRoot.'/logviewer.museumwnf.org/app', 'master', ['repository' => 'logviewer', 'branch' => 'master']);
+
+$makeTask('database_creation', 'database', 'creation', $scheduledTaskDirectories['local'].'database-creation');
+$makeTask('database_content', 'database', 'content', $scheduledTaskDirectories['local'].'database-content');
+
+$makeTask('demo_books-client', 'demo', 'books-client', $scheduledTaskDirectories['demo'].'upgrade-books-client', $applicationRoot.'/upgrade-books.museumwnf.org/client', 'develop');
+$makeTask('demo_books-api', 'demo', 'books-api', $scheduledTaskDirectories['demo'].'upgrade-books-api', $applicationRoot.'/upgrade-books.museumwnf.org/api', 'develop');
+$makeTask('demo_portal-client', 'demo', 'portal-client', $scheduledTaskDirectories['demo'].'portal-client', $applicationRoot.'/upgrade-portal.museumwnf.org/client', 'develop');
+$makeTask('demo_portal-api', 'demo', 'portal-api', $scheduledTaskDirectories['demo'].'portal-api', $applicationRoot.'/upgrade-portal.museumwnf.org/api', 'develop');
+$makeTask('demo_explore-client', 'demo', 'explore-client', $scheduledTaskDirectories['demo'].'explore-client', $applicationRoot.'/upgrade-explore.museumwnf.org/client', 'develop');
+$makeTask('demo_explore-api', 'demo', 'explore-api', $scheduledTaskDirectories['demo'].'explore-api', $applicationRoot.'/upgrade-explore.museumwnf.org/api', 'develop');
+$makeTask('demo_galleries-client', 'demo', 'galleries-client', $scheduledTaskDirectories['demo'].'galleries-client', $applicationRoot.'/upgrade-galleries.museumwnf.org/client', 'develop');
+$makeTask('demo_galleries-api', 'demo', 'galleries-api', $scheduledTaskDirectories['demo'].'galleries-api', $applicationRoot.'/upgrade-galleries.museumwnf.org/api', 'develop');
+$makeTask('demo_islamicart', 'demo', 'islamicart', $scheduledTaskDirectories['demo'].'upgrade-dia', $applicationRoot.'/upgrade-dia.museumwnf.org/app', 'develop');
+$makeTask('demo_dynasties-client', 'demo', 'dynasties-client', $scheduledTaskDirectories['demo'].'upgrade-dynasties-client', $applicationRoot.'/upgrade-dynasties-local.museumwnf.org/client', 'develop');
+$makeTask('demo_dynasties-api', 'demo', 'dynasties-api', $scheduledTaskDirectories['demo'].'upgrade-dynasties-api', $applicationRoot.'/upgrade-dynasties-local.museumwnf.org/api', 'develop');
+
+return $tasks;

@@ -26,6 +26,7 @@ class TaskSeeder extends Seeder
             }
 
             $directory = $this->requireString($taskDefinition, 'directory', $name);
+            $label = $this->requireString($taskDefinition, 'label', $name);
             $scheduledTaskPath = $this->requireString($taskDefinition, 'scheduled_task_path', $name);
             $type = $this->requireString($taskDefinition, 'type', $name);
             $active = true;
@@ -50,6 +51,7 @@ class TaskSeeder extends Seeder
                 ['name' => $name],
                 [
                     'directory' => $directory,
+                    'label' => $label,
                     'scheduled_task_path' => $scheduledTaskPath,
                     'type' => $type,
                     'active' => $active,
