@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Exhibition;
+use App\Services\AuditLogger;
 use App\Services\Exhibitions\ExhibitionConfigurationService;
 use App\Services\Exhibitions\ExhibitionRegistrySyncService;
 use Illuminate\Contracts\View\View;
@@ -48,13 +49,15 @@ class ExhibitionForm extends Component
         $this->clientEnvironment = $this->stringifyEnvironment($exhibition->client_env);
     }
 
-    public function save(ExhibitionConfigurationService $configurationService, ExhibitionRegistrySyncService $syncService)
+    public function save(ExhibitionConfigurationService $configurationService, ExhibitionRegistrySyncService $syncService, AuditLogger $auditLogger)
     {
         $validated = $this->validate($this->rules(), [], [
             'languageId' => 'language id',
             'apiEnvironment' => 'API environment',
             'clientEnvironment' => 'client environment',
         ]);
+        $action = $this->editMode ? 'exhibition.updated' : 'exhibition.created';
+        $target = $validated['name'].':'.$validated['languageId'];
 
         $configurationService->install(
             $validated['name'],
@@ -63,6 +66,11 @@ class ExhibitionForm extends Component
             $validated['clientEnvironment'],
         );
         $syncService->sync();
+        $auditLogger->log($action, $target, [
+            'mode' => $this->editMode ? 'edit' : 'create',
+            'name' => $validated['name'],
+            'language_id' => $validated['languageId'],
+        ]);
 
         session()->flash('status', 'Exhibition configuration saved.');
 

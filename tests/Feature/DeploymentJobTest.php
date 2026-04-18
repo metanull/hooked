@@ -43,6 +43,12 @@ class DeploymentJobTest extends TestCase
         $this->assertNotNull($deployment->completed_at);
         $this->assertStringContainsString('Exit code: 0', $deployment->output ?? '');
         $this->assertStringContainsString('started', $deployment->output ?? '');
+
+        $this->assertDatabaseHas('audit_log', [
+            'user' => null,
+            'action' => 'task.triggered',
+            'target' => 'deploy-hooked',
+        ]);
     }
 
     public function test_dispatch_sync_marks_the_deployment_as_failed_when_powershell_fails(): void

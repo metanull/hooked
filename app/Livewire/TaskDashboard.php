@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Deployment;
 use App\Models\Task;
+use App\Services\AuditLogger;
 use App\Services\Tasks\TaskExecutionService;
 use App\Services\Tasks\TaskStatusService;
 use Illuminate\Contracts\View\View;
@@ -50,7 +51,7 @@ class TaskDashboard extends Component
         ]);
     }
 
-    public function triggerTask(int $taskId, TaskExecutionService $taskExecutionService, TaskStatusService $taskStatusService): void
+    public function triggerTask(int $taskId, TaskExecutionService $taskExecutionService, TaskStatusService $taskStatusService, AuditLogger $auditLogger): void
     {
         $task = $this->findTask($taskId);
         $user = Auth::user();
@@ -60,6 +61,11 @@ class TaskDashboard extends Component
         }
 
         $deployment = $taskExecutionService->trigger($task, $user->email);
+        $auditLogger->log('task.triggered', $task->name, [
+            'triggered_by' => $user->email,
+            'deployment_id' => $deployment->id,
+            'source' => 'task_dashboard',
+        ]);
         $this->loadStatuses($taskStatusService);
 
         session()->flash('status', 'Triggered task '.$task->label.' with deployment record #'.$deployment->id.'.');

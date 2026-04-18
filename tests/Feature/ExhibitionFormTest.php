@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Livewire\ExhibitionForm;
 use App\Models\Exhibition;
+use App\Models\User;
 use App\Services\Exhibitions\ExhibitionConfigurationService;
 use App\Services\Exhibitions\ExhibitionRegistrySyncService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,6 +44,9 @@ class ExhibitionFormTest extends TestCase
 
     public function test_save_calls_powershell_install_and_then_syncs_the_registry(): void
     {
+        $user = User::factory()->create([
+            'email' => 'editor@example.test',
+        ]);
         $configurationService = new class extends ExhibitionConfigurationService {
             public array $captured = [];
 
@@ -77,7 +81,8 @@ class ExhibitionFormTest extends TestCase
         $this->app->instance(ExhibitionConfigurationService::class, $configurationService);
         $this->app->instance(ExhibitionRegistrySyncService::class, $syncService);
 
-        Livewire::test(ExhibitionForm::class)
+        Livewire::actingAs($user)
+            ->test(ExhibitionForm::class)
             ->set('name', 'arts_in_dialogue')
             ->set('languageId', 'de')
             ->set('apiEnvironment', "APP_NAME=Dialogue\nAPP_ENV=production")
@@ -92,6 +97,11 @@ class ExhibitionFormTest extends TestCase
             'clientEnvironment' => 'VITE_APP_NAME=Dialogue',
         ], $configurationService->captured);
         $this->assertSame(1, $syncService->calls);
+        $this->assertDatabaseHas('audit_log', [
+            'user' => 'editor@example.test',
+            'action' => 'exhibition.created',
+            'target' => 'arts_in_dialogue:de',
+        ]);
     }
 
     public function test_save_validates_the_name_and_language_id_patterns(): void

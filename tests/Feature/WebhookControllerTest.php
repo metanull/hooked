@@ -68,6 +68,13 @@ class WebhookControllerTest extends TestCase
         Bus::assertDispatched(DeploymentJob::class, function (DeploymentJob $job) use ($task): bool {
             return $job->taskId === $task->id;
         });
+
+        $this->assertDatabaseHas('audit_log', [
+            'user' => null,
+            'action' => 'webhook.received',
+            'target' => 'hooked:main',
+            'ip_address' => '104.192.140.15',
+        ]);
     }
 
     public function test_webhook_endpoint_rejects_a_request_that_fails_provider_validation(): void

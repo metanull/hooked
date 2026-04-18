@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Exhibition;
+use App\Services\AuditLogger;
 use App\Services\Exhibitions\ExhibitionQueueService;
 use App\Services\Exhibitions\ExhibitionQueueStatusService;
 use App\Services\Exhibitions\ExhibitionRegistrySyncService;
@@ -27,37 +28,66 @@ class ExhibitionList extends Component
         $this->reloadQueueState();
     }
 
-    public function publishDemo(int $exhibitionId, ExhibitionQueueService $queueService): void
+    public function publishDemo(int $exhibitionId, ExhibitionQueueService $queueService, AuditLogger $auditLogger): void
     {
-        $queueService->publishDemo($this->findExhibition($exhibitionId));
+        $exhibition = $this->findExhibition($exhibitionId);
+
+        $queueService->publishDemo($exhibition);
+        $this->logExhibitionAction($auditLogger, 'exhibition.publish_requested', $exhibition, [
+            'channel' => 'demo',
+            'operation' => 'publish',
+        ]);
         $this->reloadQueueState();
         session()->flash('status', 'Queued demo publish for the selected exhibition.');
     }
 
-    public function unpublishDemo(int $exhibitionId, ExhibitionQueueService $queueService): void
+    public function unpublishDemo(int $exhibitionId, ExhibitionQueueService $queueService, AuditLogger $auditLogger): void
     {
-        $queueService->unpublishDemo($this->findExhibition($exhibitionId));
+        $exhibition = $this->findExhibition($exhibitionId);
+
+        $queueService->unpublishDemo($exhibition);
+        $this->logExhibitionAction($auditLogger, 'exhibition.unpublish_requested', $exhibition, [
+            'channel' => 'demo',
+            'operation' => 'unpublish',
+        ]);
         $this->reloadQueueState();
         session()->flash('status', 'Queued demo unpublish for the selected exhibition.');
     }
 
-    public function publishLive(int $exhibitionId, ExhibitionQueueService $queueService): void
+    public function publishLive(int $exhibitionId, ExhibitionQueueService $queueService, AuditLogger $auditLogger): void
     {
-        $queueService->publishLive($this->findExhibition($exhibitionId));
+        $exhibition = $this->findExhibition($exhibitionId);
+
+        $queueService->publishLive($exhibition);
+        $this->logExhibitionAction($auditLogger, 'exhibition.publish_requested', $exhibition, [
+            'channel' => 'live',
+            'operation' => 'publish',
+        ]);
         $this->reloadQueueState();
         session()->flash('status', 'Queued live publish for the selected exhibition.');
     }
 
-    public function unpublishLive(int $exhibitionId, ExhibitionQueueService $queueService): void
+    public function unpublishLive(int $exhibitionId, ExhibitionQueueService $queueService, AuditLogger $auditLogger): void
     {
-        $queueService->unpublishLive($this->findExhibition($exhibitionId));
+        $exhibition = $this->findExhibition($exhibitionId);
+
+        $queueService->unpublishLive($exhibition);
+        $this->logExhibitionAction($auditLogger, 'exhibition.unpublish_requested', $exhibition, [
+            'channel' => 'live',
+            'operation' => 'unpublish',
+        ]);
         $this->reloadQueueState();
         session()->flash('status', 'Queued live unpublish for the selected exhibition.');
     }
 
-    public function uninstall(int $exhibitionId, ExhibitionQueueService $queueService): void
+    public function uninstall(int $exhibitionId, ExhibitionQueueService $queueService, AuditLogger $auditLogger): void
     {
-        $queueService->uninstall($this->findExhibition($exhibitionId));
+        $exhibition = $this->findExhibition($exhibitionId);
+
+        $queueService->uninstall($exhibition);
+        $this->logExhibitionAction($auditLogger, 'exhibition.deleted', $exhibition, [
+            'operation' => 'uninstall',
+        ]);
         $this->reloadQueueState();
         session()->flash('status', 'Queued exhibition uninstall.');
     }
@@ -110,5 +140,22 @@ class ExhibitionList extends Component
         $this->queueRunnerState = $queueState['state'];
         $this->queueRunnerBusy = $queueState['busy'];
         $this->pendingQueueCommands = $queueState['pending_commands'];
+    }
+
+    /**
+     * @param  array<string, string>  $payload
+     */
+    private function logExhibitionAction(AuditLogger $auditLogger, string $action, Exhibition $exhibition, array $payload): void
+    {
+        $auditPayload = $payload;
+        $auditPayload['name'] = $exhibition->name;
+        $auditPayload['language_id'] = $exhibition->language_id;
+
+        $auditLogger->log($action, $this->formatExhibitionTarget($exhibition), $auditPayload);
+    }
+
+    private function formatExhibitionTarget(Exhibition $exhibition): string
+    {
+        return $exhibition->name.':'.$exhibition->language_id;
     }
 }

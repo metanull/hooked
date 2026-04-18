@@ -108,6 +108,9 @@ class ExhibitionListTest extends TestCase
             'client_env' => ['VITE_APP_NAME' => 'Dialogue'],
             'synced_at' => now(),
         ]);
+        $user = User::factory()->create([
+            'email' => 'operator@example.test',
+        ]);
         $queueService = new class extends ExhibitionQueueService {
             /**
              * @var array<int, string>
@@ -145,7 +148,8 @@ class ExhibitionListTest extends TestCase
         };
         $this->app->instance(ExhibitionQueueService::class, $queueService);
 
-        Livewire::test(ExhibitionList::class)
+        Livewire::actingAs($user)
+            ->test(ExhibitionList::class)
             ->call('publishDemo', $exhibition->id)
             ->call('unpublishDemo', $exhibition->id)
             ->call('publishLive', $exhibition->id)
@@ -159,6 +163,22 @@ class ExhibitionListTest extends TestCase
             'unpublishLive:arts_in_dialogue:de',
             'uninstall:arts_in_dialogue:de',
         ], $queueService->operations);
+        $this->assertDatabaseCount('audit_log', 5);
+        $this->assertDatabaseHas('audit_log', [
+            'user' => 'operator@example.test',
+            'action' => 'exhibition.publish_requested',
+            'target' => 'arts_in_dialogue:de',
+        ]);
+        $this->assertDatabaseHas('audit_log', [
+            'user' => 'operator@example.test',
+            'action' => 'exhibition.unpublish_requested',
+            'target' => 'arts_in_dialogue:de',
+        ]);
+        $this->assertDatabaseHas('audit_log', [
+            'user' => 'operator@example.test',
+            'action' => 'exhibition.deleted',
+            'target' => 'arts_in_dialogue:de',
+        ]);
     }
 
     public function test_publish_all_queues_demo_for_every_exhibition_and_skips_live_for_test_names(): void

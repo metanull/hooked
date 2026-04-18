@@ -168,5 +168,10 @@ class TaskDashboardTest extends TestCase
             'triggered_by' => $user->email,
             'status' => 'queued',
         ]);
+        $this->assertDatabaseHas('audit_log', [
+            'user' => $user->email,
+            'action' => 'task.triggered',
+            'target' => 'books_client',
+        ]);
     }
 }
