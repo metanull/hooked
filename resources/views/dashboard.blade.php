@@ -8,6 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto space-y-8 sm:px-6 lg:px-8">
             <livewire:task-dashboard />
+            <livewire:deployment-history-viewer />
             <livewire:smtp-test-form />
         </div>
     </div>
