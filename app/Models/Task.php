@@ -16,6 +16,7 @@ class Task extends Model
     protected $fillable = [
         'name',
         'directory',
+        'label',
         'scheduled_task_path',
         'type',
         'active',
