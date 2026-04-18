@@ -75,6 +75,7 @@ class TaskDashboardTest extends TestCase
             ->assertSee('Local')
             ->assertSee('client')
             ->assertSee('api')
+            ->call('toggleDirectory', 'local')
             ->assertSee('webhook')
             ->assertSee('2 commits');
     }
@@ -100,6 +101,33 @@ class TaskDashboardTest extends TestCase
             ->get('/admin/dashboard')
             ->assertOk()
             ->assertSeeLivewire('task-dashboard');
+    }
+
+    public function test_task_dashboard_expands_the_first_directory_and_can_toggle_sections(): void
+    {
+        Task::query()->create([
+            'name' => 'books_client',
+            'directory' => 'books',
+            'label' => 'client',
+            'scheduled_task_path' => '\\www.museumwnf.org\\books-client',
+            'type' => 'run',
+            'active' => true,
+        ]);
+        Task::query()->create([
+            'name' => 'local_webhook',
+            'directory' => 'local',
+            'label' => 'webhook',
+            'scheduled_task_path' => '\\local.museumwnf.org\\webhook',
+            'type' => 'run',
+            'active' => true,
+        ]);
+
+        Livewire::test(TaskDashboard::class)
+            ->assertSet('expandedDirectories', ['books'])
+            ->call('toggleDirectory', 'local')
+            ->assertSet('expandedDirectories', ['books', 'local'])
+            ->call('toggleDirectory', 'books')
+            ->assertSet('expandedDirectories', ['local']);
     }
 
     public function test_trigger_task_creates_a_deployment_record(): void

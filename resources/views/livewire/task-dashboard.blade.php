@@ -14,19 +14,26 @@
     </div>
 
     @foreach ($groupedTasks as $directory => $tasks)
-        <details class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm" @if ($loop->first) open @endif>
-            <summary class="cursor-pointer list-none border-b border-slate-200 bg-slate-50 px-6 py-4">
-                <div class="flex items-center justify-between gap-4">
+        @php($isExpanded = in_array($directory, $expandedDirectories, true))
+        <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm" @if ($isExpanded) wire:poll.5s="refreshDirectoryStatus('{{ $directory }}')" @endif>
+            <div class="border-b border-slate-200 bg-slate-50 px-6 py-4">
+                <button type="button" wire:click="toggleDirectory('{{ $directory }}')" class="flex w-full items-center justify-between gap-4 text-left">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Directory</p>
                         <h4 class="mt-1 text-lg font-semibold text-slate-900">{{ ucfirst($directory) }}</h4>
                     </div>
-                    <span class="inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-700">
-                        {{ $tasks->count() }} tasks
-                    </span>
-                </div>
-            </summary>
+                    <div class="flex items-center gap-3">
+                        <span class="inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-700">
+                            {{ $tasks->count() }} tasks
+                        </span>
+                        <span class="text-sm font-semibold text-slate-500">
+                            {{ $isExpanded ? 'Collapse' : 'Expand' }}
+                        </span>
+                    </div>
+                </button>
+            </div>
 
+            @if ($isExpanded)
             <div class="grid gap-4 px-6 py-6 md:grid-cols-2 xl:grid-cols-3">
                 @foreach ($tasks as $task)
                     @php($tone = $this->badgeTone($task))
@@ -60,6 +67,7 @@
                     </div>
                 @endforeach
             </div>
-        </details>
+            @endif
+        </section>
     @endforeach
 </div>

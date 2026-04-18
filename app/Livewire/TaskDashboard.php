@@ -18,9 +18,23 @@ class TaskDashboard extends Component
      */
     public array $taskStatuses = [];
 
+    /**
+     * @var array<int, string>
+     */
+    public array $expandedDirectories = [];
+
     public function mount(TaskStatusService $taskStatusService): void
     {
         $this->loadStatuses($taskStatusService);
+
+        $firstDirectory = Task::query()
+            ->where('active', true)
+            ->orderBy('directory')
+            ->value('directory');
+
+        if (is_string($firstDirectory) && $firstDirectory !== '') {
+            $this->expandedDirectories = [$firstDirectory];
+        }
     }
 
     public function render(): View
@@ -54,6 +68,41 @@ class TaskDashboard extends Component
     public function refreshStatuses(TaskStatusService $taskStatusService): void
     {
         $this->loadStatuses($taskStatusService);
+    }
+
+    public function toggleDirectory(string $directory, TaskStatusService $taskStatusService): void
+    {
+        if (in_array($directory, $this->expandedDirectories, true)) {
+            $this->expandedDirectories = array_values(array_filter(
+                $this->expandedDirectories,
+                fn (string $expandedDirectory): bool => $expandedDirectory !== $directory,
+            ));
+
+            return;
+        }
+
+        $this->expandedDirectories[] = $directory;
+        $this->refreshDirectoryStatus($directory, $taskStatusService);
+    }
+
+    public function refreshDirectoryStatus(string $directory, TaskStatusService $taskStatusService): void
+    {
+        foreach (Task::query()->where('active', true)->where('directory', $directory)->get() as $task) {
+            try {
+                $this->taskStatuses[$task->id] = $taskStatusService->read($task);
+            } catch (\Throwable $throwable) {
+                Log::error('Task dashboard directory status refresh failed for an individual task.', [
+                    'task_id' => $task->id,
+                    'task_name' => $task->name,
+                    'message' => $throwable->getMessage(),
+                ]);
+
+                $this->taskStatuses[$task->id] = [
+                    'badge_text' => 'Status error',
+                    'detail' => $throwable->getMessage(),
+                ];
+            }
+        }
     }
 
     public function badgeTone(Task $task): string
@@ -103,20 +152,7 @@ class TaskDashboard extends Component
         $this->taskStatuses = [];
 
         foreach (Task::query()->where('active', true)->get() as $task) {
-            try {
-                $this->taskStatuses[$task->id] = $taskStatusService->read($task);
-            } catch (\Throwable $throwable) {
-                Log::error('Task dashboard status refresh failed for an individual task.', [
-                    'task_id' => $task->id,
-                    'task_name' => $task->name,
-                    'message' => $throwable->getMessage(),
-                ]);
-
-                $this->taskStatuses[$task->id] = [
-                    'badge_text' => 'Status error',
-                    'detail' => $throwable->getMessage(),
-                ];
-            }
+            $this->refreshDirectoryStatus($task->directory, $taskStatusService);
         }
     }
 }
